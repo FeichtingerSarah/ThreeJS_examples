@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset=utf-8>
+    <title>My first three.js app</title>
+    <style>
+        #mainContainer
+        {
+            margin:0px;
+            padding:0px;
+            position:absolute;
+            width:700px;
+            height:450px;
+            left:50%;
+            top:50%;
+            margin-left:-350px;
+            margin-top:-225px;
+        }
+
+        #headerText
+        {
+            position:relative;
+            margin:0px;
+            padding:0px;
+            width:700px;
+            height:30px;
+        }
+
+        #webglContainer
+        {
+            margin:0px;
+            padding:0px;
+            position:relative;
+            width:700px;
+            height:400px;
+            border:solid 1px #bbb;
+        }﻿
+    </style>
+    <script src="three.js"></script>
+    <script type="text/javascript">
+
+        var zeichenflaeche;
+        var zeichner;
+        var kamera;
+        var kugel;
+        var welt3D;
+
+        function onLoadComplete() {
+            // Erstellung der Zeichenfläche
+            zeichenflaeche = document.getElementById("webglContainer");
+
+            // Erstellung des Zeichners
+            zeichner = new THREE.WebGLRenderer();
+            zeichner.setSize(zeichenflaeche.clientWidth, zeichenflaeche.clientHeight);      // Breite, Höhe
+
+            zeichenflaeche.appendChild(zeichner.domElement);    // Verbindung zwischen Zeichner && Zeichenfläche
+
+            kamera = new THREE.PerspectiveCamera(45, zeichenflaeche.clientWidth/zeichenflaeche.clientHeight, 1, 100000);
+
+            // Stellen die Entfernung zu dem Objekt auf allen Achsen ein, wären sonst im Ursprung des Objekts
+            kamera.position.z = 800;
+            kamera.position.y = 800;
+            kamera.rotation.x = -0.78;  // Hier stellen wir noch die Neigung ein, -0.78pi = 45° nach unten
+
+
+            // Erstellung der Kugel
+
+            // (Radius, Feinheit des Gittermodells in Horizontale (bzw. um die Kugle herum), Feinheit des Gittermodells in Vertikale)
+            var kugelForm = new THREE.SphereGeometry(250, 20, 20);
+            // Mesh Basic = Standart Material, ((Rote) Hexfarbe wird in js mit 0x eingeleitet, wireframe = Gittermodell
+            var kugelMaterial = new THREE.MeshBasicMaterial({ color:0xff0000, wireframe:true });
+            //var kugelMaterial = new THREE.MeshNormalMaterial();
+            // 3D Objekt wird erstellt
+            kugel = new THREE.Mesh(kugelForm, kugelMaterial);
+
+            // Erstellung der 3D Welt
+            welt3D = new THREE.Scene();
+            welt3D.add(kamera);
+            welt3D.add(kugel);
+
+            zeichne();
+        }
+
+        // Zeichner soll 3d welt zeichnen und dafür die Kamera "kamera" verwenden
+        function zeichne() {
+            zeichner.render(welt3D, kamera);
+        }
+
+    </script>
+</head>
+<body onload="onLoadComplete();">
+    <div id = "mainContainer">
+        <div id = "headerText">Kugelmodell</div>
+        <div id = "webglContainer"></div>
+    </div>
+</body>
+</html>
